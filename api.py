@@ -1,6 +1,6 @@
 import requests
 
-ENDPOINT = 'http://140.112.251.50:5000'
+ENDPOINT = 'https://raccoon-moving-stud.ngrok-free.app'
 
 def get_user_points(user_id):
     res = requests.get(f'{ENDPOINT}/user_points', json={'line_id': user_id})
@@ -39,13 +39,14 @@ def generate_icon(user_id, prompt):
 
     return icon['icon'] if res.status_code == 200 else None
 
-def send_review_result(user_id, reviewer_id, result):
+def send_review_result(data, result):
     body = {
-        'line_id': user_id,
-        'reviewer_id': reviewer_id,
+        'author_id': data['author_id'],
+        'pr_url': data['pr_url'],
+        'reviewer_id': data['reviewer_id'],
         'result': result
     }
 
-    res = requests.post(f'{ENDPOINT}/api/v1/review', json=body)
+    res = requests.post(f'{ENDPOINT}/review', json=body)
 
     return "回覆成功" if res.status_code == 200 else "回覆失敗"

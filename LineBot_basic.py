@@ -10,13 +10,14 @@ from api import get_reward_data, exchange_reward, generate_icon, send_review_res
 from config import LINEBOT_ACCESS_TOKEN, LINEBOT_CHANNEL_SECRET
 from LineBot_richMenus import link_richmenu_to_user
 
-import time, os, threading, json
+import time, os, threading, json, re
 
 line_bot_api = LineBotApi(LINEBOT_ACCESS_TOKEN) #LineBot's Channel access token
 handler = WebhookHandler(LINEBOT_CHANNEL_SECRET)        #LineBot's Channel secret
 
 # user_id_set=set()                                         #LineBot's Friend's user id 
 userId_status = {}                                          #LineBot's Friend's status
+reviewer_data = {}
 app = Flask(__name__)
 
 def loadUserStatus():
@@ -72,6 +73,9 @@ def reviewRequest():
     print(line_id)
     for message in messages:
         line_bot_api.push_message(line_id, message)
+
+    reviewer_data[line_id] = data
+    updateUserStatus(line_id, "review")
     
     return jsonify({"message": "ok"}, 200)
 
@@ -88,7 +92,14 @@ def handle_message(event):
         updateUserStatus(userId, "normal")
         url = generate_icon(userId, Msg)
         if url:
-            line_bot_api.reply_message(event.reply_token, ImageSendMessage(original_content_url=url, preview_image_url=url))   
+            line_bot_api.reply_message(event.reply_token, ImageSendMessage(original_content_url=url, preview_image_url=url))
+    elif userId_status[userId] == "review":
+        if re.match(r'^[1-5]分$', Msg):
+            updateUserStatus(userId, "normal")
+            data = reviewer_data[userId]
+            send_review_result(data, Msg.split('分')[0])
+        else:
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text="請點選 1~5分"))
     else:
         line_bot_api.reply_message(event.reply_token,TextSendMessage(text="歡迎使用黑客組TSMC-2 LineBot\n\n請點擊選單執行操作\n-----------------------\n作者:\n   楊秉宇\n   戚維凌\n   蔡師睿\n   鄭栩安\n   許訓輔\n\n遇到任何問題請聯絡@an_x0510\n"))
 

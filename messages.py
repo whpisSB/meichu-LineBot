@@ -67,9 +67,9 @@ def get_review_message(review):
         items=[
             QuickReplyButton(
                 action={
-                    "type": "postback",
+                    "type": "message",
                     "label": f"{point}分",
-                    "data": point,
+                    "text": f"{point}分",
                 }
             )
             for point in range(1, 6)
