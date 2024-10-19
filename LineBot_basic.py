@@ -8,6 +8,7 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage, PostbackE
 from messages import get_reward_message, get_review_message, get_user_reward_message
 from api import get_reward_data, exchange_reward, generate_icon, send_review_result, get_user_reward
 from config import LINEBOT_ACCESS_TOKEN, LINEBOT_CHANNEL_SECRET
+from LineBot_richMenus import link_richmenu_to_user
 
 import time, os, threading, json
 
@@ -81,6 +82,7 @@ def handle_message(event):
     
     userId = event.source.user_id
     if not userId in userId_status:
+        link_richmenu_to_user(userId)
         updateUserStatus(userId, "normal")
     if userId_status[userId] == "reply_prompt":
         updateUserStatus(userId, "normal")
@@ -94,6 +96,7 @@ def handle_message(event):
 def handle_postback(event):
     user_id = event.source.user_id
     if user_id not in userId_status:
+        link_richmenu_to_user(user_id)
         updateUserStatus(user_id, "normal")
     data = event.postback.data # postback label
     if data == "myPoints":

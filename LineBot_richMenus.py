@@ -78,6 +78,8 @@ def set_first_half_semester_rich_menus():
     richmenu_id = create(data)
     # 上傳圖片
     upload_image(file, richmenu_id)
+    with open('./data/richMenu_id', 'w') as file:
+        file.write(richmenu_id)
     return richmenu_id
 
 def create(data):
@@ -104,7 +106,8 @@ def upload_image(file, richmenu_id):
         print(f"upload_image {response}")
         print(response.json())
 
-def link_richmenu_to_user(file, user_id):
+def link_richmenu_to_user(user_id):
+    file = './data/richMenu_id'
     try:
         with open(file, 'r') as file:
             richmenu_id = file.readline()
