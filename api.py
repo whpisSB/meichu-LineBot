@@ -2,15 +2,25 @@ import requests
 
 ENDPOINT = 'http://140.112.251.50:5000'
 
-def get_reward_data():
-    res = requests.get(f'{ENDPOINT}/api/v1/rewards')
-    reward = res.json()
+def get_user_points(user_id):
+    res = requests.get(f'{ENDPOINT}/user_points', params={'line_id': user_id})
+    points = res.json()
+    return points if res.status_code == 200 else None
 
-    return reward['rewards'] if res.status_code == 200 else None
+def get_user_reward(user_id):
+    res = requests.get(f'{ENDPOINT}/user_rewards', params={'line_id': user_id})
+    rewards = res.json()
+    return rewards if res.status_code == 200 else None
+
+def get_reward_data():
+    res = requests.get(f'{ENDPOINT}/reward')
+    reward = res.json()
+    print("====\n",reward)
+    return reward if res.status_code == 200 else None
 
 def exchange_reward(user_id, reward_id):
     body = {
-        'user_id': user_id,
+        'line_id': user_id,
         'reward_id': reward_id
     }
     
@@ -20,7 +30,7 @@ def exchange_reward(user_id, reward_id):
 
 def generate_icon(user_id, prompt):
     body = {
-        'user_id': user_id,
+        'line_id': user_id,
         'prompt': prompt
     }
 
@@ -31,7 +41,7 @@ def generate_icon(user_id, prompt):
 
 def send_review_result(user_id, reviewer_id, result):
     body = {
-        'user_id': user_id,
+        'line_id': user_id,
         'reviewer_id': reviewer_id,
         'result': result
     }

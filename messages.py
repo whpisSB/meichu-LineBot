@@ -10,7 +10,7 @@ def get_reward_message(rewards):
                 {
                     "type": "postback",
                     "label": f"台積點 * {reward['points']}",
-                    "data": f"price {reward['id']}",
+                    "data": f"price {reward['reward_id']}",
                 }
             ]
         )
@@ -36,3 +36,4 @@ def get_review_message(review):
             for point in range(1, 6)
         ]
     )
+
