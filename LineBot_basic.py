@@ -3,7 +3,7 @@
 from flask import Flask, request, abort, jsonify
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError 
-from linebot.models import MessageEvent, TextMessage, TextSendMessage, PostbackEvent, ImageSendMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, PostbackEvent, ImageSendMessage, FollowEvent
 
 from messages import get_reward_message, get_review_message, get_user_reward_message
 from api import get_reward_data, exchange_reward, generate_icon, send_review_result, get_user_reward
@@ -78,6 +78,16 @@ def reviewRequest():
     updateUserStatus(line_id, "review")
     
     return jsonify({"message": "ok"}, 200)
+
+
+@handler.add(FollowEvent)
+def handle_follow(event):
+    userId = event.source.user_id
+    if not userId in userId_status:
+        link_richmenu_to_user(userId)
+    updateUserStatus(userId, "normal")
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(text="歡迎使用黑客組TSMC-2 LineBot\n\n請點擊選單執行操作\n-----------------------\n作者:\n   楊秉宇\n   戚維凌\n   蔡師睿\n   鄭栩安\n   許訓輔\n\n遇到任何問題請聯絡@an_x0510\n"))
+
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):

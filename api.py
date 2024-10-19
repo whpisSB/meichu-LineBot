@@ -1,6 +1,7 @@
 import requests
 
-ENDPOINT = 'https://raccoon-moving-stud.ngrok-free.app'
+# ENDPOINT = 'https://raccoon-moving-stud.ngrok-free.app'
+ENDPOINT = 'http://140.112.251.50:5000'
 
 def get_user_points(user_id):
     res = requests.get(f'{ENDPOINT}/user_points', json={'line_id': user_id})
