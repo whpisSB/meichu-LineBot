@@ -33,12 +33,14 @@ def get_reward_message(rewards):
 
 
 def get_review_message(review):
-    github_id = review["github_id"]
+    github_id = review["author_id"]
     summary = json.loads(review["summary"])
     template = review_template.copy()
 
     template["body"] = summary["contents"]["body"]
-
+    
+    ## TODO: add pr_url
+    
     # Format github_id
     template["header"]["contents"][0]["text"] = \
         template["header"]["contents"][0]["text"].format(github_id)
@@ -50,7 +52,7 @@ def get_review_message(review):
         template["header"]["contents"][3]["contents"][0]["contents"][0]["text"].format(review["commit_count"])
 
     # Format additions, deletions, total
-    additions, deletions, total = summary["contents"]["additions"], summary["contents"]["deletions"], summary["contents"]["total"]
+    additions, deletions, total = review["additions"], review["deletions"], review["total"]
     template["header"]["contents"][3]["contents"][1]["contents"][0]["text"] = \
         template["header"]["contents"][3]["contents"][1]["contents"][0]["text"].format(additions)
     template["header"]["contents"][3]["contents"][1]["contents"][1]["text"] = \
