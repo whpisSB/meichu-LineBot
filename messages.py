@@ -5,6 +5,7 @@ from linebot.models import (
     QuickReply,
     QuickReplyButton,
     MessageAction,
+    TextSendMessage,
     FlexSendMessage,
 )
 import json
@@ -36,8 +37,7 @@ def get_review_message(review):
     github_id = review["author_id"]
     summary = json.loads(review["summary"])
     template = review_template.copy()
-
-    template["body"] = summary["contents"]["body"]
+    template["body"] = summary['flexMessage']["contents"]["body"]
     
     ## TODO: add pr_url
     
@@ -62,7 +62,8 @@ def get_review_message(review):
 
     flex_message = FlexSendMessage(alt_text="Review", contents=template)
 
-    quick_reply = QuickReply(
+    quick_reply = TextSendMessage("Please rate your employee's work!",
+        quick_reply=QuickReply(
         items=[
             QuickReplyButton(
                 action={
@@ -73,7 +74,8 @@ def get_review_message(review):
             )
             for point in range(1, 6)
         ]
-    )
+    ))
+
 
     return [flex_message, quick_reply]
 

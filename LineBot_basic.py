@@ -68,7 +68,9 @@ def reviewRequest():
 
     messages = get_review_message(data)
     line_id = data["reviewer_id"]
-    line_bot_api.push_message(line_id, messages)
+    print(line_id)
+    for message in messages:
+        line_bot_api.push_message(line_id, message)
     
     return jsonify({"message": "ok"}, 200)
 
@@ -134,12 +136,12 @@ if __name__ == "__main__":
     idList = loadUserId()
     if idList: user_id_set = set(idList)
     print(user_id_set)
-    try:
-        for userId in user_id_set:
-            if userId_status[userId] == "normal":
-                line_bot_api.push_message(userId, TextSendMessage(text="歡迎使用黑客組TSMC-2 LineBot\n\n請點擊選單執行操作\n-----------------------\n作者:\n   楊秉宇\n   戚維凌\n   蔡師睿\n   鄭栩安\n   許訓輔\n\n遇到任何問題請聯絡@an_x0510\n"))  # Push API example
-    except Exception as e:
-        print(e)
+    # try:
+    #     for userId in user_id_set:
+    #         if userId_status[userId] == "normal":
+    #             line_bot_api.push_message(userId, TextSendMessage(text="歡迎使用黑客組TSMC-2 LineBot\n\n請點擊選單執行操作\n-----------------------\n作者:\n   楊秉宇\n   戚維凌\n   蔡師睿\n   鄭栩安\n   許訓輔\n\n遇到任何問題請聯絡@an_x0510\n"))  # Push API example
+    # except Exception as e:
+        # print(e)
     app.run('127.0.0.1', port=32768, threaded=True, use_reloader=False)
 
     

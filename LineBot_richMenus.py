@@ -104,6 +104,19 @@ def upload_image(file, richmenu_id):
         print(f"upload_image {response}")
         print(response.json())
 
+def link_richmenu_to_user(file, user_id):
+    try:
+        with open(file, 'r') as file:
+            richmenu_id = file.readline()
+            richmenu_id = richmenu_id.strip()
+            url = f'https://api.line.me/v2/bot/user/{user_id}/richmenu/{richmenu_id}'
+            headers = {"Authorization": f"Bearer {LINEBOT_ACCESS_TOKEN}"}
+            res = requests.post(url, headers=headers)
+            print(res.text)
+    except Exception as err:
+        print(err)
+        raise Exception
+
 def link_richmenu_to_multiple_users():
     try:
         richmenu_id = set_first_half_semester_rich_menus()
