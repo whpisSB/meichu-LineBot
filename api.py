@@ -3,12 +3,12 @@ import requests
 ENDPOINT = 'http://140.112.251.50:5000'
 
 def get_user_points(user_id):
-    res = requests.get(f'{ENDPOINT}/user_points', params={'line_id': user_id})
+    res = requests.get(f'{ENDPOINT}/user_points', json={'line_id': user_id})
     points = res.json()
     return points if res.status_code == 200 else None
 
 def get_user_reward(user_id):
-    res = requests.get(f'{ENDPOINT}/user_rewards', params={'line_id': user_id})
+    res = requests.get(f'{ENDPOINT}/user_rewards', json={'line_id': user_id})
     rewards = res.json()
     return rewards if res.status_code == 200 else None
 
