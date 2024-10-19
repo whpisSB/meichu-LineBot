@@ -64,16 +64,12 @@ def callback():
 # when backend send review request to manager
 @app.route("/review", methods=['POST'])
 def reviewRequest():
-    signature = request.headers['X-Line-Signature']    # get X-Line-Signature header value
-    body = request.get_data(as_text=True)              # get request body as text
-    print("Request body: " + body, "Signature: " + signature)
-    try:
-        handler.handle(body, signature)                # handle webhook body
-    except InvalidSignatureError:
-        abort(400)
-    
-    print("Type of Body: ", type(body))
+    data = request.get_json()
 
+    messages = get_review_message(data)
+    line_id = data["reviewer_id"]
+    line_bot_api.push_message(line_id, messages)
+    
     return jsonify({"message": "ok"}, 200)
 
 @handler.add(MessageEvent, message=TextMessage)
