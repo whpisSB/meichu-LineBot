@@ -137,6 +137,7 @@ review_template = {
     },
     "styles": {"body": {"backgroundColor": "#f5f5f2"}},
 }
+
 def get_user_reward_message(rewards):
     column = [
         CarouselColumn(
@@ -147,7 +148,7 @@ def get_user_reward_message(rewards):
                 {
                     "type": "postback",
                     "label": "查看",
-                    "data": f"reward {reward['reward_id']}",
+                    "data": "nothing",
                 }
             ]
         )

@@ -24,7 +24,7 @@ def exchange_reward(user_id, reward_id):
         'reward_id': reward_id
     }
     
-    res = requests.post(f'{ENDPOINT}/api/v1/rewards', json=body)
+    res = requests.post(f'{ENDPOINT}/exchange_reward', json=body)
 
     return "購買成功" if res.status_code == 200 else "點數不足"
 
