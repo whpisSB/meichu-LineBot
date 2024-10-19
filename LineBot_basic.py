@@ -14,7 +14,7 @@ import time, os, threading, json
 line_bot_api = LineBotApi(LINEBOT_ACCESS_TOKEN) #LineBot's Channel access token
 handler = WebhookHandler(LINEBOT_CHANNEL_SECRET)        #LineBot's Channel secret
 
-user_id_set=set()                                         #LineBot's Friend's user id 
+# user_id_set=set()                                         #LineBot's Friend's user id 
 userId_status = {}                                          #LineBot's Friend's status
 app = Flask(__name__)
 
@@ -80,7 +80,7 @@ def handle_message(event):
     print('\n\nGotMsg:{}\n\n'.format(Msg))
     
     userId = event.source.user_id
-    if not userId in user_id_set:
+    if not userId in userId_status:
         updateUserStatus(userId, "normal")
     if userId_status[userId] == "reply_prompt":
         updateUserStatus(userId, "normal")
@@ -93,7 +93,7 @@ def handle_message(event):
 @handler.add(PostbackEvent)
 def handle_postback(event):
     user_id = event.source.user_id
-    if user_id not in user_id_set:
+    if user_id not in userId_status:
         updateUserStatus(user_id, "normal")
     data = event.postback.data # postback label
     if data == "myPoints":
@@ -133,9 +133,10 @@ def handle_postback(event):
 
 if __name__ == "__main__":
     userId_status = loadUserStatus()
-    idList = loadUserId()
-    if idList: user_id_set = set(idList)
-    print(user_id_set)
+    print(userId_status)
+    # idList = loadUserId()
+    # if idList: user_id_set = set(idList)
+    # print(user_id_set)
     # try:
     #     for userId in user_id_set:
     #         if userId_status[userId] == "normal":
