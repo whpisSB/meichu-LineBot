@@ -45,7 +45,7 @@ def get_review_message(review):
     template["header"]["contents"][0]["text"] = \
         template["header"]["contents"][0]["text"].format(github_id)
     template["header"]["contents"][1]["text"] = \
-        template["header"]["contents"][1]["text"].format(github_id, github_id)
+        template["header"]["contents"][1]["text"].format(github_id)
 
     # Format commit count
     template["header"]["contents"][3]["contents"][0]["contents"][0]["text"] = \
@@ -62,7 +62,7 @@ def get_review_message(review):
 
     flex_message = FlexSendMessage(alt_text="Review", contents=template)
 
-    quick_reply = TextSendMessage("Please rate your employee's work!",
+    quick_reply = TextSendMessage(f"請評價{github_id}這次的貢獻!",
         quick_reply=QuickReply(
         items=[
             QuickReplyButton(
@@ -88,14 +88,14 @@ review_template = {
         "contents": [
             {
                 "type": "text",
-                "text": "New PR merged for {}!",
+                "text": "{}發了一個新的PR!",
                 "weight": "bold",
                 "wrap": True,
                 "color": "#ffffff",
             },
             {
                 "type": "text",
-                "text": "Below is the summary of {}'s work, please give {} a rating to prove his contribution!",
+                "text": "以下是{}這次PR的貢獻以及此PR的摘要!",
                 "wrap": True,
                 "color": "#ffffff",
             },
