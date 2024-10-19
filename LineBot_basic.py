@@ -98,6 +98,8 @@ def handle_message(event):
             updateUserStatus(userId, "normal")
             data = reviewer_data[userId]
             send_review_result(data, Msg.split('分')[0])
+            del reviewer_data[userId]
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text="感謝您的回覆!"))
         else:
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text="請點選 1~5分"))
     else:
