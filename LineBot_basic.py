@@ -3,7 +3,7 @@
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError 
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, PostbackEvent
 
 import time, requests
 import os
@@ -53,7 +53,17 @@ def callback():
 def handle_message(event):
     Msg = event.message.text
     print('\n\nGotMsg:{}\n\n'.format(Msg))
-    line_bot_api.reply_message(event.reply_token,TextSendMessage(text="歡迎使用黑客組TSMC-2 LineBot\n\n作者: 楊丙與\n   戚維凌\n   蔡師瑞\n   鄭栩安\n   許訓輔\n\n遇到任何問題請聯絡@an_x0510\n"))
+    line_bot_api.reply_message(event.reply_token,TextSendMessage(text="歡迎使用黑客組TSMC-2 LineBot\n\n作者: 楊秉宇\n   戚維凌\n   蔡師瑞\n   鄭栩安\n   許訓輔\n\n遇到任何問題請聯絡@an_x0510\n"))
+    
+    userId = event.source.user_id
+    if not userId in user_id_set:
+        saveUserId(userId)
+
+@handler.add(PostbackEvent, message=TextMessage)
+def handle_message(event):
+    Msg = event.message.text
+    print('\n\nGotMsg:{}\n\n'.format(Msg))
+    line_bot_api.reply_message(event.reply_token,TextSendMessage(text="歡迎使用黑客組TSMC-2 LineBot\n\n作者: 楊秉宇\n   戚維凌\n   蔡師瑞\n   鄭栩安\n   許訓輔\n\n遇到任何問題請聯絡@an_x0510\n"))
     
     userId = event.source.user_id
     if not userId in user_id_set:
