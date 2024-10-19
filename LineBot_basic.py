@@ -6,7 +6,7 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage, PostbackEvent, ImageSendMessage
 
 from messages import get_reward_message, get_review_message, get_user_reward_message
-from api import get_reward_data, exchange_reward, generate_icon, send_review_result, get_user_reward
+from api import get_reward_data, exchange_reward, generate_icon, send_review_result, get_user_reward, get_review_history
 from config import LINEBOT_ACCESS_TOKEN, LINEBOT_CHANNEL_SECRET
 from LineBot_richMenus import link_richmenu_to_user
 
@@ -113,13 +113,9 @@ def handle_postback(event):
         updateUserStatus(user_id, "normal")
     data = event.postback.data # postback label
     if data == "myPoints":
-        points = get_user_reward(user_id)
-        print(points)
-        # if points:
-        #     line_bot_api.reply_message(event.reply_token, get_user_points_message(rewards))
-        # else:
-        #     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=f"目前總台積點: {points[0]['total_points']}"))
-
+        message = get_review_history(user_id)
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
+        
     elif data == "myPrize":
         rewards = get_user_reward(user_id)
         print(rewards)

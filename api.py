@@ -2,10 +2,24 @@ import requests
 
 ENDPOINT = 'https://raccoon-moving-stud.ngrok-free.app'
 
-def get_user_points(user_id):
-    res = requests.get(f'{ENDPOINT}/user_points', json={'line_id': user_id})
-    points = res.json()
-    return points if res.status_code == 200 else None
+def get_review_history(user_id):
+    res = requests.get(f'{ENDPOINT}/review_history', json={'line_id': user_id})
+    data = res.json()
+
+    message = ""
+    
+    if res.status_code == 200:
+        
+        message += "台積點: " + str(data[0]['total_points']) + "\n\n"
+
+        review_history = []
+        if len(data) > 1:
+            for i, review in enumerate(data[1:], 1):
+                message += f"{i}. 審核時間: {review['review_at']}\n   PR連結: {review['pr_url']}\n   審核者: {review['reviewer']}\n   得分: {review['result']}\n\n"
+        else:
+            message = "目前沒有審核紀錄"
+            
+    return message
 
 def get_user_reward(user_id):
     res = requests.get(f'{ENDPOINT}/user_rewards', json={'line_id': user_id})
