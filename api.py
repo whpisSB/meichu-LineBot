@@ -1,7 +1,7 @@
 import requests
 
-# ENDPOINT = 'https://raccoon-moving-stud.ngrok-free.app'
-ENDPOINT = 'http://140.112.251.50:5000'
+ENDPOINT = 'https://raccoon-moving-stud.ngrok-free.app'
+# ENDPOINT = 'http://140.112.251.50:5000'
 
 def get_review_history(user_id):
     res = requests.get(f'{ENDPOINT}/review_history', json={'line_id': user_id})
@@ -16,7 +16,7 @@ def get_review_history(user_id):
         review_history = []
         if len(data) > 1:
             for i, review in enumerate(data[1:], 1):
-                message += f"{i}. 審核時間: {review['review_at']}\n   PR連結: {review['pr_url']}\n   審核者: {review['reviewer']}\n   得分: {review['result']}\n\n"
+                message += f"{i}. 審核時間: {review['review_at']}\n   PR連結: {review['pr_url']}\n   審核者: {review['reviewer_github_id']}\n   得分: {review['points']}\n\n"
         else:
             message = "目前沒有審核紀錄"
             
@@ -49,7 +49,7 @@ def generate_icon(user_id, prompt):
         'prompt': prompt
     }
 
-    res = requests.post(f'{ENDPOINT}/api/v1/icons', json=body)
+    res = requests.post(f'{ENDPOINT}/icon', json=body)
     icon = res.json()
 
     return icon['icon'] if res.status_code == 200 else None

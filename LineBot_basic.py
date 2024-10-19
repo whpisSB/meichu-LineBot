@@ -103,6 +103,8 @@ def handle_message(event):
         url = generate_icon(userId, Msg)
         if url:
             line_bot_api.reply_message(event.reply_token, ImageSendMessage(original_content_url=url, preview_image_url=url))
+        else:
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text="功能開發中"))
     elif userId_status[userId] == "review":
         if re.match(r'^[1-5]分$', Msg):
             updateUserStatus(userId, "normal")
