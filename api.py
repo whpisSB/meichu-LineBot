@@ -1,7 +1,7 @@
 import requests
 
-ENDPOINT = 'https://raccoon-moving-stud.ngrok-free.app'
-# ENDPOINT = 'http://140.112.251.50:5000'
+# ENDPOINT = 'https://raccoon-moving-stud.ngrok-free.app' # CCF, port=32768
+ENDPOINT = 'http://140.112.251.50:5000' # YBU
 
 def get_review_history(user_id):
     res = requests.get(f'{ENDPOINT}/review_history', json={'line_id': user_id})
@@ -24,6 +24,7 @@ def get_review_history(user_id):
 
 def get_user_reward(user_id):
     res = requests.get(f'{ENDPOINT}/user_rewards', json={'line_id': user_id})
+    print(res)
     rewards = res.json()
     return rewards if res.status_code == 200 else None
 
@@ -50,9 +51,9 @@ def generate_icon(user_id, prompt):
     }
 
     res = requests.post(f'{ENDPOINT}/icon', json=body)
+    print(res)
     icon = res.json()
-
-    return icon['icon'] if res.status_code == 200 else None
+    return icon['url'] if res.status_code == 200 else None
 
 def send_review_result(data, result):
     body = {

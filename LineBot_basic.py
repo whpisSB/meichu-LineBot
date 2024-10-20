@@ -3,7 +3,7 @@
 from flask import Flask, request, abort, jsonify
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError 
-from linebot.models import MessageEvent, TextMessage, TextSendMessage, PostbackEvent, ImageSendMessage, FollowEvent
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, PostbackEvent, ImageSendMessage, FollowEvent, UnfollowEvent
 
 from messages import get_reward_message, get_review_message, get_user_reward_message
 from api import get_reward_data, exchange_reward, generate_icon, send_review_result, get_user_reward, get_review_history
@@ -79,11 +79,23 @@ def reviewRequest():
     
     return jsonify({"message": "ok"}, 200)
 
+@handler.add(UnfollowEvent)
+def handle_unfollow(event):
+    userId = event.source.user_id
+    if userId in userId_status:
+        userId_status.pop(userId)
+    with open('data/userStatus.json', 'r+') as userStatusFile:
+        userStatus = json.load(userStatusFile)
+        userStatus.pop(userId)
+        userStatusFile.seek(0)
+        json.dump(userStatus, userStatusFile)
+        userStatusFile.truncate()
 
 @handler.add(FollowEvent)
 def handle_follow(event):
     userId = event.source.user_id
     if not userId in userId_status:
+        print("\n\nLinking richmenu to user\n\n")
         link_richmenu_to_user(userId)
     updateUserStatus(userId, "normal")
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text="歡迎使用黑客組TSMC-2 LineBot\n\n請點擊選單執行操作\n-----------------------\n作者:\n   楊秉宇\n   戚維凌\n   蔡師睿\n   鄭栩安\n   許訓輔\n\n遇到任何問題請聯絡@an_x0510\n"))
@@ -92,7 +104,7 @@ def handle_follow(event):
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     Msg = event.message.text
-    print('\n\nGotMsg:{}\n\n'.format(Msg))
+    print('\n\nGotMsg: {}\n\n'.format(Msg))
     
     userId = event.source.user_id
     if not userId in userId_status:
@@ -100,10 +112,12 @@ def handle_message(event):
         updateUserStatus(userId, "normal")
     if userId_status[userId] == "reply_prompt":
         updateUserStatus(userId, "normal")
+        line_bot_api.push_message(userId, TextSendMessage(text="圖片已送出，生成圖片中請稍後..."))
         url = generate_icon(userId, Msg)
         if url:
             line_bot_api.reply_message(event.reply_token, ImageSendMessage(original_content_url=url, preview_image_url=url))
         else:
+            print("Failed to generate icon")
             line_bot_api.reply_message(event.reply_token, TextSendMessage(text="功能開發中"))
     elif userId_status[userId] == "review":
         if re.match(r'^[1-5]分$', Msg):
@@ -158,15 +172,6 @@ def handle_postback(event):
 if __name__ == "__main__":
     userId_status = loadUserStatus()
     print(userId_status)
-    # idList = loadUserId()
-    # if idList: user_id_set = set(idList)
-    # print(user_id_set)
-    # try:
-    #     for userId in user_id_set:
-    #         if userId_status[userId] == "normal":
-    #             line_bot_api.push_message(userId, TextSendMessage(text="歡迎使用黑客組TSMC-2 LineBot\n\n請點擊選單執行操作\n-----------------------\n作者:\n   楊秉宇\n   戚維凌\n   蔡師睿\n   鄭栩安\n   許訓輔\n\n遇到任何問題請聯絡@an_x0510\n"))  # Push API example
-    # except Exception as e:
-        # print(e)
     app.run('127.0.0.1', port=32768, threaded=True, use_reloader=False)
 
     
