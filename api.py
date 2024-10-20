@@ -1,7 +1,6 @@
 import requests
 
-# ENDPOINT = 'https://raccoon-moving-stud.ngrok-free.app' # CCF, port=32768
-ENDPOINT = 'http://140.112.251.50:5000' # YBU
+ENDPOINT = ''
 
 def get_review_history(user_id):
     res = requests.get(f'{ENDPOINT}/review_history', json={'line_id': user_id})
