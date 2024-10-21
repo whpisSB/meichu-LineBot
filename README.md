@@ -1,4 +1,4 @@
-# tsmc-LineBot
+# meichu-LineBot
 > 填入LineBot Access Token > config.py
 > 填入後端ip address > api.py
 
